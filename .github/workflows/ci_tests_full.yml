@@ -13,7 +13,7 @@ jobs:
     name: Formatting Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: psf/black@stable
         with:
           options: "--check --diff"
@@ -24,45 +24,48 @@ jobs:
     name: Lint Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.11"
 
       - name: flake8 Lint
         uses: py-actions/flake8@v2
 
   tests:
+    name: Unit Tests for ${{ matrix.python-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - name: Checkout Zipline
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install TA-Lib Linux
+      - name: Install TA-Lib
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
           sudo ./tools/install_talib.sh
 
-      - name: Install TA-Lib macOS
+      - name: Install TA-Lib HDF5 c-blosc
         if: ${{ matrix.os == 'macos-latest' }}
         run: |
           brew install ta-lib
+          brew install hdf5
+          brew install c-blosc
 
       - name: Developer Command Prompt for Microsoft Visual C++
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Install TA-Lib Windows
+      - name: Install TA-Lib
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           ./tools/install_talib.bat
@@ -75,7 +78,7 @@ jobs:
           python -m pip install .[test]
 
       - name: Unittests with tox & pytest
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v3
         with:
           timeout_minutes: 90
           max_attempts: 3
