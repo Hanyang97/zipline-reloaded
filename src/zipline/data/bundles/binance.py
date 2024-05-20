@@ -95,7 +95,7 @@ logger.handlers.append(handler)
 #             self.csvdir,
 #         )
 
-@bundles.register("binance-bundle-1m", calendar_name="24/7", minutes_per_day=1440)
+@bundles.register("binance-bundle-1m", start_session=pd.Timestamp(year=2010, month=1, day=1), calendar_name="24/7", minutes_per_day=1440)
 def binance_bundle_1d(
     environ,
     asset_db_writer,
@@ -125,7 +125,7 @@ def binance_bundle_1d(
     csvdir=None,
 )
 
-@bundles.register("binance-bundle-1d", calendar_name="24/7", minutes_per_day=1440)
+@bundles.register("binance-bundle-1d", start_session=pd.Timestamp(year=2010, month=1, day=1), calendar_name="24/7", minutes_per_day=1440)
 def binance_bundle_1d(
     environ,
     asset_db_writer,
