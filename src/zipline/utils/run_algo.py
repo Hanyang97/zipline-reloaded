@@ -208,6 +208,7 @@ def _run(
                 trading_calendar=trading_calendar,
                 capital_base=capital_base,
                 data_frequency=data_frequency,
+                emission_rate=data_frequency,   # no idea wtf this is but it blocks benchmark
             ),
             metrics_set=metrics_set,
             blotter=blotter,
